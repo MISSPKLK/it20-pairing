@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT20 พี่รหัส — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #0f0f27;
+      --bg2: #212043;
+      --bg3: #2c3064;
+      --accent: #7da2ff;
+      --accent-deep: #2a5298;
+      --accent-deep2: #1e3c72;
+      --glass: rgba(255, 255, 255, .08);
+      --glass-brd: rgba(255, 255, 255, .18);
+      --warn: #fcd34d;
+      --err: #fca5a5;
+      --ok: #86efac;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      padding: 1.5rem;
+    }
+
+    .wrap {
+      max-width: 1000px;
+      margin: 0 auto
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 1.6rem
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 700;
+      text-shadow: 0 0 18px rgba(125, 162, 255, .5)
+    }
+
+    .sub {
+      color: var(--accent);
+      font-weight: 300;
+      margin-top: .3rem;
+      font-size: .9rem
+    }
+
+    /* login gate */
+    .gate {
+      max-width: 420px;
+      margin: 3rem auto 0;
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-brd);
+      border-radius: 18px;
+      padding: 1.6rem
+    }
+
+    .gate h2 {
+      font-size: 1.2rem;
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 1rem
+    }
+
+    label {
+      display: block;
+      font-size: .85rem;
+      color: #c7d2fe;
+      margin-bottom: .4rem
+    }
+
+    input {
+      width: 100%;
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      background: rgba(15, 15, 39, .55);
+      border: 1px solid #3b3f73;
+      font-size: 1rem;
+      transition: .2s
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 162, 255, .25)
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: .8rem 1.4rem;
+      border: none;
+      border-radius: 12px;
+      width: 100%;
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(45deg, var(--accent-deep2), var(--accent-deep));
+      transition: .25s
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, .3)
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .gate-msg {
+      font-size: .82rem;
+      color: var(--err);
+      margin-top: .7rem;
+      text-align: center;
+      min-height: 1em
+    }
+
+    /* dashboard */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+      flex-wrap: wrap
+    }
+
+    .toolbar .updated {
+      font-size: .78rem;
+      color: #8b92c9
+    }
+
+    .btn-sm {
+      width: auto;
+      margin: 0;
+      padding: .55rem 1.1rem;
+      font-size: .88rem
+    }
+
+    .btn-ghost {
+      background: rgba(255, 255, 255, .08);
+      border: 1px solid var(--glass-brd)
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: .9rem;
+      margin-bottom: 1.5rem
+    }
+
+    .stat {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-brd);
+      border-radius: 14px;
+      padding: 1.1rem;
+      text-align: center
+    }
+
+    .stat .num {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1
+    }
+
+    .stat .lbl {
+      font-size: .78rem;
+      color: #c7d2fe;
+      margin-top: .3rem
+    }
+
+    .stat.good .num {
+      color: var(--ok)
+    }
+
+    .stat.warn .num {
+      color: var(--warn)
+    }
+
+    .stat.err .num {
+      color: var(--err)
+    }
+
+    .progress-wrap {
+      background: var(--glass);
+      border: 1px solid var(--glass-brd);
+      border-radius: 14px;
+      padding: 1.1rem 1.3rem;
+      margin-bottom: 1.5rem
+    }
+
+    .progress-wrap .top {
+      display: flex;
+      justify-content: space-between;
+      font-size: .85rem;
+      color: #c7d2fe;
+      margin-bottom: .5rem
+    }
+
+    .bar {
+      height: 14px;
+      background: rgba(15, 15, 39, .6);
+      border-radius: 99px;
+      overflow: hidden
+    }
+
+    .bar>span {
+      display: block;
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+      transition: width .6s ease
+    }
+
+    .panels {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.1rem
+    }
+
+    .panel {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-brd);
+      border-radius: 16px;
+      padding: 1.2rem;
+      min-width: 0
+    }
+
+    .panel h3 {
+      font-size: 1rem;
+      margin-bottom: .2rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem
+    }
+
+    .panel .desc {
+      font-size: .76rem;
+      color: #8b92c9;
+      margin-bottom: .9rem
+    }
+
+    .panel.empty-ok h3 .dot {
+      color: var(--ok)
+    }
+
+    .panel.has-items h3 .dot {
+      color: var(--warn)
+    }
+
+    .list {
+      max-height: 340px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: .4rem
+    }
+
+    .item {
+      background: rgba(15, 15, 39, .4);
+      border: 1px solid #2f3566;
+      border-radius: 9px;
+      padding: .55rem .75rem;
+      font-size: .85rem;
+      display: flex;
+      justify-content: space-between;
+      gap: .6rem
+    }
+
+    .item .id {
+      color: var(--accent);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0
+    }
+
+    .item .nm {
+      color: #e0e7ff;
+      text-align: right;
+      word-break: break-word
+    }
+
+    .all-clear {
+      text-align: center;
+      color: var(--ok);
+      font-size: .88rem;
+      padding: 1.4rem 0
+    }
+
+    .list::-webkit-scrollbar {
+      width: 6px
+    }
+
+    .list::-webkit-scrollbar-thumb {
+      background: #3b3f73;
+      border-radius: 99px
+    }
+
+    .err-banner {
+      background: rgba(220, 38, 38, .18);
+      border: 1px solid rgba(248, 113, 113, .4);
+      color: var(--err);
+      padding: .8rem;
+      border-radius: 10px;
+      text-align: center;
+      font-size: .88rem;
+      margin-bottom: 1rem
+    }
+
+    .spinner {
+      width: 42px;
+      height: 42px;
+      border: 4px solid var(--accent);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 3rem auto
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .hidden {
+      display: none
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #6b73a8;
+      font-size: .76rem
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>IT20 พี่รหัส — Admin</h1>
+      <p class="sub">สถานะการจับคู่พี่น้อง</p>
+    </header>
+
+  
+    <div id="gate" class="gate">
+      <h2>เข้าสู่ระบบ Staff</h2>
+      <label for="token">Admin Token</label>
+      <input id="token" type="password" placeholder="ใส่ ADMIN_TOKEN" autocomplete="off">
+      <button id="loginBtn">เข้าสู่ระบบ</button>
+      <p id="gateMsg" class="gate-msg"></p>
+    </div>
+
+    <!-- dashboard -->
+    <div id="dash" class="hidden">
+      <div class="toolbar">
+        <span id="updated" class="updated"></span>
+        <div style="display:flex; gap:.6rem">
+          <button id="refreshBtn" class="btn-sm">รีเฟรช</button>
+          <button id="logoutBtn" class="btn-sm btn-ghost">ออกจากระบบ</button>
+        </div>
+      </div>
+
+      <div id="errBanner" class="err-banner hidden"></div>
+      <div id="spinner" class="spinner hidden"></div>
+
+      <div id="content" class="hidden">
+        <!-- progress -->
+        <div class="progress-wrap">
+          <div class="top">
+            <span>พี่ที่ถูกจับคู่แล้ว</span>
+            <span id="progressText">0 / 0</span>
+          </div>
+          <div class="bar"><span id="progressBar" style="width:0%"></span></div>
+        </div>
+
+        <!-- stat cards -->
+        <div class="cards" id="cards"></div>
+
+        <!-- panels -->
+        <div class="panels">
+          <div id="panelSeniorsUnpaired" class="panel"></div>
+          <div id="panelJuniorsNotDrawn" class="panel"></div>
+          <div id="panelSeniorsNoHint" class="panel"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>© 2026 • made with ♡ by <a href="https://www.instagram.com/misspklk/">Minikiss</a> </footer>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const ADMIN_URL = "https://eyuwxrcmnwyrecdxgkpb.supabase.co/functions/v1/admin-status";
+      const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dXd4cmNtbnd5cmVjZHhna3BiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTAwMzMsImV4cCI6MjA5NzM2NjAzM30.4pQlUzZEOdIrnO972rs-7dcQeFRmWZkFLuIBnrNUinM";
+
+      const $ = (id) => document.getElementById(id);
+      const gate = $("gate"), dash = $("dash"), gateMsg = $("gateMsg");
+      const tokenInput = $("token"), loginBtn = $("loginBtn");
+      const spinner = $("spinner"), content = $("content"), errBanner = $("errBanner");
+
+      let adminToken = "";
+
+      const saved = sessionStorage.getItem("it20_admin_token");
+      if (saved) { adminToken = saved; enterDash(); load(); }
+
+      function enterDash() { gate.classList.add("hidden"); dash.classList.remove("hidden"); }
+      function exitDash() {
+        sessionStorage.removeItem("it20_admin_token");
+        adminToken = ""; tokenInput.value = "";
+        dash.classList.add("hidden"); gate.classList.remove("hidden");
+        content.classList.add("hidden");
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[c]));
+      }
+
+      async function load() {
+        spinner.classList.remove("hidden");
+        content.classList.add("hidden");
+        errBanner.classList.add("hidden");
+        try {
+          const res = await fetch(ADMIN_URL, {
+            headers: { "x-admin-token": adminToken, "Authorization": "Bearer " + ANON_KEY },
+          });
+          if (res.status === 401) {
+            spinner.classList.add("hidden");
+            gateMsg.textContent = "Token ไม่ถูกต้อง";
+            exitDash();
+            return;
+          }
+          const data = await res.json();
+          if (!res.ok || data.error) throw new Error(data.error || "load_failed");
+          render(data);
+        } catch (e) {
+          spinner.classList.add("hidden");
+          errBanner.textContent = "โหลดข้อมูลไม่สำเร็จ: " + e.message;
+          errBanner.classList.remove("hidden");
+        }
+      }
+
+      function render(data) {
+        const s = data.summary;
+
+        // progress (พี่ที่จับคู่ / พี่ทั้งหมด)
+        const pct = s.seniors_total ? Math.round(s.seniors_paired / s.seniors_total * 100) : 0;
+        $("progressText").textContent = `${s.seniors_paired} / ${s.seniors_total} (${pct}%)`;
+        $("progressBar").style.width = pct + "%";
+
+        // stat cards
+        const cards = [
+          { num: s.seniors_total, lbl: "พี่ทั้งหมด", cls: "" },
+          { num: s.juniors_total, lbl: "น้องทั้งหมด", cls: "" },
+          { num: s.juniors_drawn, lbl: "น้องที่สุ่มแล้ว", cls: s.juniors_drawn === s.juniors_total ? "good" : "" },
+          { num: s.seniors_unpaired, lbl: "พี่ที่ยังไม่มีน้อง", cls: s.seniors_unpaired === 0 ? "good" : "warn" },
+          { num: s.juniors_not_drawn, lbl: "น้องที่ยังไม่สุ่ม", cls: s.juniors_not_drawn === 0 ? "good" : "warn" },
+          { num: s.seniors_without_hint, lbl: "พี่ที่ยังไม่กรอกคำใบ้", cls: s.seniors_without_hint === 0 ? "good" : "err" },
+        ];
+        $("cards").innerHTML = cards.map(c =>
+          `<div class="stat ${c.cls}"><div class="num">${c.num}</div><div class="lbl">${c.lbl}</div></div>`
+        ).join("");
+
+        // panels
+        panel("panelSeniorsUnpaired", "พี่ที่ยังไม่มีน้อง",
+          "ถ้ายังเหลือตอนจบกิจกรรม = น้องมาสุ่มไม่ครบ ต้องจัดการ manual",
+          data.seniors_unpaired, "ทุกคนมีน้องแล้ว 🎉");
+        panel("panelJuniorsNotDrawn", "น้องที่ยังไม่สุ่ม",
+          "ตามให้น้องกลุ่มนี้มาสุ่มเพื่อให้พี่ครบทุกคน",
+          data.juniors_not_drawn, "น้องสุ่มครบแล้ว 🎉");
+        panel("panelSeniorsNoHint", "พี่ที่ยังไม่กรอกคำใบ้",
+          "พี่กลุ่มนี้ยังไม่ได้ใส่คำใบ้ใน Sheet — น้องจะเห็นช่องว่าง",
+          data.seniors_without_hint, "พี่กรอกคำใบ้ครบแล้ว 🎉");
+
+        $("updated").textContent = "อัปเดตล่าสุด: " + new Date().toLocaleString("th-TH");
+        spinner.classList.add("hidden");
+        content.classList.remove("hidden");
+      }
+
+      function panel(elId, title, desc, items, emptyMsg) {
+        const has = items.length > 0;
+        const el = $(elId);
+        el.className = "panel " + (has ? "has-items" : "empty-ok");
+        let html = `<h3><span class="dot">●</span> ${title} <span style="color:#8b92c9;font-weight:400">(${items.length})</span></h3>
+                <p class="desc">${desc}</p>`;
+        if (has) {
+          html += `<div class="list">` + items.map(it =>
+            `<div class="item"><span class="id">${escapeHtml(it.id)}</span><span class="nm">${escapeHtml(it.name)}</span></div>`
+          ).join("") + `</div>`;
+        } else {
+          html += `<div class="all-clear">${emptyMsg}</div>`;
+        }
+        el.innerHTML = html;
+      }
+
+      loginBtn.addEventListener("click", () => {
+        const t = tokenInput.value.trim();
+        if (!t) { gateMsg.textContent = "กรุณาใส่ token"; return; }
+        adminToken = t;
+        sessionStorage.setItem("it20_admin_token", t);
+        gateMsg.textContent = "";
+        enterDash();
+        load();
+      });
+      tokenInput.addEventListener("keydown", (e) => { if (e.key === "Enter") loginBtn.click(); });
+      $("refreshBtn").addEventListener("click", load);
+      $("logoutBtn").addEventListener("click", exitDash);
+    })();
+  </script>
+</body>
+
+</html>

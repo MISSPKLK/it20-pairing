@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>คำใบ้พี่รหัส IT20</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg1: #0f0f27;
+      --bg2: #212043;
+      --bg3: #2c3064;
+      --accent: #7da2ff;
+      --accent-deep: #2a5298;
+      --accent-deep2: #1e3c72;
+      --glass: rgba(255, 255, 255, .08);
+      --glass-brd: rgba(255, 255, 255, .18);
+      --warn: #fcd34d;
+      --err: #fca5a5;
+      --ok: #86efac;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      color: #fff;
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 560px
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 6vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-shadow: 0 0 18px rgba(125, 162, 255, .55)
+    }
+
+    .sub {
+      color: var(--accent);
+      font-weight: 300;
+      margin-top: .35rem;
+      font-size: .95rem
+    }
+
+    .card {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-brd);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .28);
+      padding: 1.6rem;
+    }
+
+    .card h2 {
+      font-size: 1.3rem;
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: .4rem
+    }
+
+    .card .lead {
+      text-align: center;
+      color: #c7d2fe;
+      font-weight: 300;
+      font-size: .92rem;
+      margin-bottom: 1.3rem
+    }
+
+    label {
+      display: block;
+      font-size: .88rem;
+      color: #c7d2fe;
+      margin-bottom: .45rem
+    }
+
+    input {
+      width: 100%;
+      padding: .8rem 1rem;
+      border-radius: 12px;
+      color: #fff;
+      font-family: inherit;
+      background: rgba(15, 15, 39, .55);
+      border: 1px solid #3b3f73;
+      font-size: 1.05rem;
+      letter-spacing: 1px;
+      transition: .2s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(125, 162, 255, .25)
+    }
+
+    .msg {
+      font-size: .82rem;
+      margin-top: .5rem;
+      min-height: 1.1em
+    }
+
+    .msg.warn {
+      color: var(--err)
+    }
+
+    .hint-note {
+      font-size: .74rem;
+      color: var(--warn);
+      margin-top: .4rem
+    }
+
+    button {
+      width: 100%;
+      margin-top: 1.2rem;
+      padding: .85rem;
+      border: none;
+      border-radius: 12px;
+      font-family: inherit;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(45deg, var(--accent-deep2), var(--accent-deep));
+      transition: .25s;
+    }
+
+    button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, .3)
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .spinner {
+      width: 42px;
+      height: 42px;
+      border: 4px solid var(--accent);
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 1.2rem auto 0
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .hidden {
+      display: none
+    }
+
+    .banner {
+      margin-top: 1rem;
+      padding: .7rem .9rem;
+      border-radius: 10px;
+      text-align: center;
+      font-size: .85rem
+    }
+
+    .banner.info {
+      background: rgba(252, 211, 77, .14);
+      border: 1px solid rgba(252, 211, 77, .4);
+      color: var(--warn)
+    }
+
+    .banner.err {
+      background: rgba(220, 38, 38, .18);
+      border: 1px solid rgba(248, 113, 113, .4);
+      color: var(--err)
+    }
+
+    /* result card */
+    .result {
+      margin-top: 1.4rem;
+      animation: appear .6s ease-out
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: scale(.94) translateY(14px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .result h3 {
+      text-align: center;
+      color: var(--accent);
+      font-size: 1.05rem;
+      margin-bottom: .2rem;
+      font-weight: 400
+    }
+
+    .senior-name {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 1.1rem;
+      text-shadow: 0 0 12px rgba(125, 162, 255, .4)
+    }
+
+    .hint-block {
+      background: rgba(15, 15, 39, .45);
+      border: 1px solid #3b3f73;
+      border-radius: 12px;
+      padding: .9rem 1rem;
+      margin-bottom: .7rem
+    }
+
+    .hint-block .tag {
+      font-size: .72rem;
+      color: var(--accent);
+      letter-spacing: .5px;
+      margin-bottom: .3rem
+    }
+
+    .hint-block .body {
+      font-size: 1.05rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word
+    }
+
+    .empty-hint {
+      text-align: center;
+      color: var(--warn);
+      padding: 1.4rem 1rem;
+      font-size: 1rem;
+      line-height: 1.6
+    }
+
+    .special-banner {
+      text-align: center;
+      font-weight: 600;
+      font-size: 1rem;
+      padding: .8rem;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      color: #fff;
+      background: linear-gradient(45deg, #b45309, #f59e0b);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, .35);
+      animation: pulse 2s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1)
+      }
+
+      50% {
+        transform: scale(1.02)
+      }
+    }
+
+    .senior-card {
+      background: rgba(15, 15, 39, .3);
+      border: 1px solid var(--glass-brd);
+      border-radius: 14px;
+      padding: 1rem;
+      margin-bottom: .9rem
+    }
+
+    .senior-card:last-of-type {
+      margin-bottom: 0
+    }
+
+    .replay {
+      text-align: center;
+      font-size: .76rem;
+      color: #8b92c9;
+      margin-top: .6rem
+    }
+
+    .fill-link {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      color: #fff;
+      margin-top: 1rem;
+      padding: .8rem;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 1rem;
+      background: linear-gradient(45deg, #166534, #16a34a);
+      transition: .25s;
+    }
+
+    .fill-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, .3)
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #6b73a8;
+      font-size: .78rem
+    }
+
+    a {
+      color: var(--accent);
+      /* text-decoration: none; */
+      font-weight: 500
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>คำใบ้พี่รหัส IT20</h1>
+      <p class="sub">เชื่อมความสัมพันธ์พี่น้อง IT</p>
+    </header>
+
+    <div class="card">
+
+      <label for="sid">รหัสนักศึกษา (ไม่ต้องใส่ขีด)</label>
+      <input id="sid" type="text" inputmode="numeric" maxlength="10" placeholder="กรอกรหัส 10 หลัก" autocomplete="off">
+      <p id="msg" class="msg"></p>
+      <p class="hint-note">* สุ่มได้เพียงครั้งเดียวต่อรหัสนักศึกษา</p>
+
+      <button id="btn">สุ่มคำใบ้</button>
+
+      <div id="spinner" class="spinner hidden"></div>
+      <div id="banner" class="banner hidden"></div>
+      <div id="result" class="result hidden"></div>
+    </div>
+
+    <footer>© 2026 • made with ♡ by <a href="https://www.instagram.com/misspklk/">Minikiss</a> </footer>
+  </div>
+
+  <script>
+    (() => {
+      "use strict";
+
+
+      const DRAW_URL = "https://eyuwxrcmnwyrecdxgkpb.supabase.co/functions/v1/draw";
+      const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5dXd4cmNtbnd5cmVjZHhna3BiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3OTAwMzMsImV4cCI6MjA5NzM2NjAzM30.4pQlUzZEOdIrnO972rs-7dcQeFRmWZkFLuIBnrNUinM";
+      const FILL_SHEET_URL = "https://docs.google.com/spreadsheets/d/1-ujvZJgdqrkQh1mbRTNPRlNd3VLu3Iang8p_0YwC-BE/edit?gid=0#gid=0";
+
+      const $ = (id) => document.getElementById(id);
+      const sid = $("sid"), msg = $("msg"), btn = $("btn");
+      const spinner = $("spinner"), banner = $("banner"), result = $("result");
+
+      const allowed = (v) => /^[0-9]{10}$/.test(v);
+
+      function showBanner(text, type) {
+        banner.textContent = text; banner.className = "banner " + type;
+        banner.classList.remove("hidden");
+      }
+      function hideBanner() { banner.classList.add("hidden"); }
+
+      function seniorBlock(s, idx, multi) {
+        const heading = multi ? `คำใบ้จากพี่รหัสคนที่ ${idx + 1}` : "คำใบ้จากพี่รหัสของคุณ";
+        let html = `<h3>${heading}</h3>`;
+        if (s.hasHint) {
+          const h1 = (s.hint1 || "").trim();
+          const h2 = (s.hint2 || "").trim();
+          if (h1) html += `<div class="hint-block"><div class="tag">คำใบ้ชุดที่ 1</div><div class="body">${escapeHtml(h1)}</div></div>`;
+          if (h2) html += `<div class="hint-block"><div class="tag">คำใบ้ชุดที่ 2</div><div class="body">${escapeHtml(h2)}</div></div>`;
+        } else {
+          html += `<div class="empty-hint">พี่เทคของคุณยังไม่กรอกคำใบ้<br>
+               <span style="font-size:.85rem;color:#c7d2fe">กลับมาเปิดดูใหม่ได้เรื่อย ๆ เดี๋ยวพี่มาฝากคำใบ้ให้</span></div>`;
+        }
+        return html;
+      }
+
+      function renderResult(data, replay) {
+        const multi = data.count >= 2;
+        let html = "";
+        if (multi) {
+          html += `<div class="special-banner">🎉 ยินดีด้วย! คุณได้พี่รหัสถึง ${data.count} คน 🎉</div>`;
+        }
+        data.seniors.forEach((s, i) => {
+          html += `<div class="senior-card">${seniorBlock(s, i, multi)}</div>`;
+        });
+        html += `<p class="replay">${replay ? "คุณได้สุ่มไปแล้ว — นี่คือคำใบ้ของคุณ" : "บันทึกเรียบร้อย • เปิดดูซ้ำได้ด้วยรหัสเดิม"}</p>`;
+        html += `<a class="fill-link" href="${FILL_SHEET_URL}" target="_blank" rel="noopener">กรอกคำใบ้ที่ได้</a>`;
+        result.innerHTML = html;
+        result.classList.remove("hidden");
+      }
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[c]));
+      }
+
+      sid.addEventListener("input", () => {
+        sid.value = sid.value.replace(/[^0-9]/g, "");
+        msg.textContent = ""; msg.className = "msg";
+        hideBanner(); result.classList.add("hidden");
+        btn.disabled = false; btn.textContent = "สุ่มคำใบ้";
+      });
+
+      async function draw() {
+        const id = sid.value.trim();
+        if (!allowed(id)) {
+          msg.textContent = "กรุณากรอกรหัสนักศึกษาให้ครบ 10 หลัก";
+          msg.className = "msg warn"; return;
+        }
+        btn.disabled = true; spinner.classList.remove("hidden");
+        hideBanner(); result.classList.add("hidden");
+
+        try {
+          const res = await fetch(DRAW_URL, {
+            method: "POST",
+            headers: { "content-type": "application/json", "Authorization": "Bearer " + ANON_KEY },
+            body: JSON.stringify({ studentId: id }),
+          });
+          const data = await res.json();
+
+          if (!res.ok || data.error) {
+            showBanner(data.message || "เกิดข้อผิดพลาด กรุณาลองใหม่", "err");
+            btn.disabled = false; btn.textContent = "สุ่มคำใบ้";
+            return;
+          }
+
+          if (data.alreadyDrawn)
+            showBanner("รหัสนี้เคยสุ่มไปแล้ว กำลังแสดงคำใบ้เดิมของคุณ", "info");
+
+          renderResult(data, data.alreadyDrawn);
+          btn.textContent = "คุณได้สุ่มคำใบ้แล้ว"; btn.disabled = true;
+
+        } catch (e) {
+          showBanner("เชื่อมต่อไม่สำเร็จ กรุณาตรวจสอบอินเทอร์เน็ต", "err");
+          btn.disabled = false; btn.textContent = "สุ่มคำใบ้";
+        } finally {
+          spinner.classList.add("hidden");
+        }
+      }
+
+      btn.addEventListener("click", draw);
+    })();
+  </script>
+</body>
+
+</html>
