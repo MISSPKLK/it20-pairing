@@ -28,16 +28,18 @@
       padding: 0
     }
 
-    body {
-      font-family: 'Prompt', sans-serif;
-      color: #fff;
-      min-height: 100vh;
-      background: linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
-    }
+   html{
+    min-height:100%;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+    background-attachment:fixed;
+}
+body{
+    font-family:'Prompt',sans-serif; color:#fff;
+    min-height:100vh; min-height:100dvh;
+    background:linear-gradient(135deg,var(--bg1),var(--bg2),var(--bg3));
+    background-attachment:fixed;
+    display:flex; align-items:center; justify-content:center; padding:1.5rem;
+}
 
     .wrap {
       width: 100%;
